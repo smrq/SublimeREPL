@@ -206,7 +206,11 @@ class SubprocessRepl(Repl):
         return " ".join([str(x) for x in self._cmd])
 
     def is_alive(self):
-        return self.popen.poll() is None
+        try:
+            return self.popen.poll() is None
+        except OSError:
+            # that guy? I wouldn't worry about that guy
+            return True
 
     def read_bytes(self):
         out = self.popen.stdout
