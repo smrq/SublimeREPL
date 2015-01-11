@@ -22,7 +22,7 @@
 	// By default SublimeREPL leaves REPL view open once the underlying subprocess
 	// dies or closes connection. This is useful when the process dies for an unexpected
 	// reason as it allows you to inspect it output. If you want. Setting this
-	// to true will cause SublimreREPL to close view once the process died.
+	// to true will cause SublimeREPL to close view once the process died.
 	"view_auto_close": false,
 
 	// On POSIX system SublimeText launched from GUI does not inherit
