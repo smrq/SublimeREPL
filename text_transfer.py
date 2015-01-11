@@ -151,7 +151,7 @@ class ReplSend(sublime_plugin.TextCommand):
 
 
 class ReplTransferCurrent(sublime_plugin.TextCommand):
-    def run(self, edit, scope="selection", action="send"):
+    def run(self, edit, scope="selection", action="send", fmt="{}"):
         text = ""
         if scope == "selection":
             text = self.selected_text()
@@ -163,8 +163,11 @@ class ReplTransferCurrent(sublime_plugin.TextCommand):
             text = self.selected_blocks()
         elif scope == "file":
             text = self.selected_file()
+        elif scope == "scope":
+            text = self.selected_scope()
         cmd = "repl_" + action
-        self.view.window().run_command(cmd, {"external_id": self.repl_external_id(), "text": text})
+        sendtext = fmt.format(text)
+        self.view.window().run_command(cmd, {"external_id": self.repl_external_id(), "text": sendtext})
 
     def repl_external_id(self):
         return self.view.scope_name(0).split(" ")[0].split(".", 1)[1]
@@ -199,3 +202,15 @@ class ReplTransferCurrent(sublime_plugin.TextCommand):
     def selected_file(self):
         v = self.view
         return v.substr(sublime.Region(0, v.size()))
+
+    def selected_scope(self):
+        v = self.view
+        strs = []
+        old_sel = list(v.sel())
+        v.run_command("expand_selection", {"to": "scope"})
+        for s in v.sel():
+            strs.append(v.substr(s))
+        v.sel().clear()
+        for s in old_sel:
+            v.sel().add(s)
+        return "\n".join(strs)
